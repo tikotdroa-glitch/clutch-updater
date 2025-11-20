@@ -2,7 +2,7 @@ name: nightly-clutch-stats
 
 on:
   schedule:
-    - cron: "0 4 * * *"  # runs daily at 07:00 UTC
+    - cron: "0 7 * * *"  # 07:00 UTC nightly
   workflow_dispatch:
 
 jobs:
@@ -20,4 +20,22 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run clutch script
-        run: python clutch_2025_26.py
+        run: python clutch_2025_26.py     # <-- THIS is the step you were missing
+
+      - name: Email clutch CSV using Brevo
+        run: |
+          curl -s --request POST \
+          --url https://api.brevo.com/v3/smtp/email \
+          --header "accept: application/json" \
+          --header "api-key: $BREVO_API_KEY" \
+          --header "content-type: multipart/form-data" \
+          -F sender="{\"name\":\"$FROM_NAME\",\"email\":\"$FROM_EMAIL\"}" \
+          -F to="[{\"email\":\"$TO_EMAIL\"}]" \
+          -F subject="Nightly NBA Clutch Stats (2025-26)" \
+          -F htmlContent="<html><body>Attached is the nightly clutch stats file.</body></html>" \
+          -F attachment=@clutch_totals_2025_26.csv
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
