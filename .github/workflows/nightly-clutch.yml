@@ -17,7 +17,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install nba_api pandas requests
+        run: pip install -r requirements.txt
 
       - name: Run clutch script
-        run: python clutch_2025_26.py  # your script
+        run: python clutch_2025_26.py
