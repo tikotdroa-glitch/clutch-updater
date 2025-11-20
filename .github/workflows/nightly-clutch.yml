@@ -1,0 +1,23 @@
+name: nightly-clutch-stats
+
+on:
+  schedule:
+    - cron: "0 4 * * *"  # runs daily at 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install nba_api pandas requests
+
+      - name: Run clutch script
+        run: python clutch_2025_26.py  # your script
