@@ -11,13 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
+           - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      - name: List repo files
+        run: |
+          echo "CURRENT DIRECTORY:"
+          pwd
+          echo "FILES:"
+          ls -R .
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
 
       - name: Run clutch script
         run: python clutch_2025_26.py     # <-- THIS is the step you were missing
