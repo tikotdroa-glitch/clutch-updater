@@ -10,18 +10,23 @@ CLUTCH_TIME_SECONDS = 5 * 60  # 5 minutes
 # Helper: Load full NBA schedule from CDN
 # ----------------------------------------------------------
 def load_schedule():
-    url = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2_1.json"
-    data = requests.get(url, timeout=30).json()
-    games = []
+    print("🔄 Loading NBA 2025-26 schedule...")
 
+    url = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2_2025.json"
+    r = requests.get(url, timeout=30)
+    data = r.json()
+
+    game_ids = []
+
+    # Iterate through game dates
     for item in data["leagueSchedule"]["gameDates"]:
-        for g in item["games"]:
-            season_year = g["seasonYear"]
-            if str(season_year) != SEASON.split("-")[0]:
-                continue  # skip different seasons
-            if g["gameStatus"] == 3:  # completed game
-                games.append(g["gameId"])
-    return games
+        # Each item contains a list of games; no seasonYear field exists
+        for game in item["games"]:
+            game_ids.append(game["gameId"])
+
+    print(f"✔ Loaded {len(game_ids)} games")
+    return game_ids
+
 
 
 # ----------------------------------------------------------
